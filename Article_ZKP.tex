@@ -1,0 +1,377 @@
+\documentclass[a4paper, 12pt]{book}
+\usepackage[latin1]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx, xcolor, enumitem, lipsum, setspace, amsmath, verbatim}
+\setstretch{1.25}
+
+\title{\textit{Zero Knowledge Proof} \\ Fundamentals and Applications}
+\author{Nicolò Zarulli \\ matricola 296235}
+\date{a.a. 2021-2022 Università di Parma}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\chapter{Introduzione}
+Questo documento vuole essere un contenitore di informazioni relative all'approccio crittografico \textit{Zero Knowledge Proof}. Nasce come mia personale necessità di raggruppare un insieme di ottime fonti ed informazioni, all'interno di uno stesso documento leggibile e coerente. 
+\par
+Conseguentemente la struttura dello stesso sarà molto semplice ed intuitiva: vi saranno dei \textit{capitoli} e delle \textit{sezioni} interne per approfondire determinati argomenti e dettagli dello stesso.
+\par
+Per ora, data inizio Marzo 2022, seguirò una stesura che va di pari passo al mio lavoro di ricerca svolto nel \textit{Dipartimento di Ingegneria dell'Informazione} presso l'Università di Parma, con un attento riguardo verso una traduzione in tesi di laurea triennale.
+
+\chapter{Zero Knowledge Proof}
+\section{ZKP: Uno sguardo introduttivo}
+La \textit{Dimostrazione a Conoscenza Zero} o \textit{Zero Knowledge Proof} è un approccio/sistema crittografico attraverso il quale un entità detta \textbf{Prover} è in grado di dimostrare di essere in possesso di un \textbf{\textit{Informazione}} o \textbf{\textit{Witness}} ad un altra entità detta \textbf{Verifier}, senza però rivelarne il contenuto e senza rivelarne alcuna conoscenza a riguardo. 
+\begin{figure}[htbp]
+	\centering
+        	\includegraphics[ width = \textwidth ]{ZKP_images/zkp4.png}
+        	\caption{Zero Knowledge Proof}
+\end{figure}
+
+\newpage
+\par
+E' generalmente considerato un \textbf{Interactive Verification Protocol}  in quanto richiede un interazione diretta tra i due enti comunicanti; si vedrà più avanti che in certi ambiti questo tipo di implementazione può risultare poco conveniente, indirizzando lo sguardo e l'interesse verso un implementazione più asincrona e \textit{Non Interactive}.
+
+\section{ZKP: La Struttura}
+Come ogni protocollo richiede, delle regole devono essere stabilite e rispettate da chiunque abbia la necessità di utilizzare lo stesso. Nessuna eccezione viene fatta per i protocolli a Zero Knowledge. 
+\par
+Prima di introdurre determinate \textit{regole} si può vedere un generico protocollo ZKP come un algoritmo che segue l'implementazione di 3 fasi sequenziali; esse saranno necessarie per stabilire un terreno di \textit{gioco} equo e coerente sia rispetto al Prover che rispetto al Verifier. 
+\par
+La Dimostrazione a Conoscenza Zero cerca quindi di risolvere un certo problema che si pone tra due entità comunicanti: 
+\begin{itemize}
+	\item il Prover conosce un segreto, per il quale vi è una ricompensa in gioco. Egli, prima di rivelare il segreto, vuole ottenere la ricompensa.
+	\item il Verifier, colui che ha messo in palio la ricompensa, vuole accertarsi che il Prover conosca effettivamente il segreto. Prima di pagare la ricompensa, vuole vedere il segreto stesso.
+\end{itemize}
+\par
+E' facile intuire come entrambe le entità non intendono mettere a rischio la loro integrità prima di aver ricevuto una prova concreta, sia essa il segreto o la ricompensa. E' in questo caso che entra in gioco la Dimostrazione a Conoscenza Zero: il Prover è in grado di dimostrare al Verifier di possedere un certo segreto, senza però rivelargli nulla di esso.
+\par
+Per poter arrivare a questo grado di certezza, dove il Prover riesce a convincere il Verifier di essere in possesso di un informazione/segreto, detto \textit{Witness} grazie alla computazione di un certo \textit{Proof}, entrambe le entità dovranno seguire un algoritmo, costituito da tre fasi:
+\begin{enumerate}
+	\item \textbf{Witness Phase}: Il Prover computa una dimostrazione, detta \textbf{Proof}, sulla base di un \textbf{segreto} e contenente uno \textit{Statement}. Questa viene inviata al Verifier, che potrà analizzarla per capire la validità del Prover.
+	\item \textbf{Challenge Phase}: Ottenuto il Proof, il Verifier inizia a fare delle domande al Prover. Permettono al Verifier di capire se il Prover sia onesto o malizioso.
+	\item \textbf{Response Phase}: Il Prover riceve le \textit{domande} dal Verifier; per ognuna di queste ne formula una risposta. Il Verifier valuta le risposte per poi prendere una decisione definitiva, accettando o rifiutando il Proof computato nella prima fase dal Prover.
+\end{enumerate}
+E' importante notare delle dirette conseguenze:
+\begin{itemize}
+	\item Se il Prover conosce veramente il segreto, riuscirà sempre a fornire risposte convincenti al Verifier. Altrimenti avrà, nel breve termine, una certa probabilità di riuscire ad ingannarlo ma a lungo andare non riuscirà a convincerlo.
+	\item Se dopo una prima esecuzione dell'algoritmo il Verifier non risulta convinto, può ritornare alla Challenge Phase.
+	\item Il lavoro del Prover potrebbe essere computazionalmente oneroso, dipende dal meccanismo utilizzato nella Response Phase.
+	\item Nelle fasi descritte \textbf{nessun tipo di informazione privata verrà condivisa}.
+\end{itemize}
+
+\newpage
+\subsection{Un esempio astratto}
+Per comprendere al meglio questo tipo di approccio crittografico, è molto efficace presentare al lettore una storia molto conosciuta che evidenzia ogni singola fase della crittografia a Zero Knowledge. 
+\\
+I due interlocutori saranno:
+\begin{itemize}
+	\item \textbf{Bob}: colui che ha scoperto un certo segreto. Bob sarà il Prover.
+	\item \textbf{Alice}: colei che garantisce una ricompensa per la rivelazione del segreto. Alice sarà il Verifier.
+\end{itemize}
+\textit{"Bob ha scoperto la parola segreta per aprire la porta in una caverna. La caverna ha una forma circolare con l'entrata da un lato e la porta che blocca l'altro lato. Alice dice a Bob che lo pagherà per il segreto, ma non prima di essere sicura che lui lo conosca davvero. Bob si dice d'accordo a rivelargli il segreto, ma non prima di aver ricevuto i soldi. Pianificano quindi uno schema con il quale Bob può dare prova ad Alice di conoscere la parola ma senza rivelargliela:
+\begin{enumerate}
+	\item Alice aspetta fuori all'entrata mentre Bob entra nella caverna; Bob sceglie uno dei due sentieri da percorrere tra A e B per raggiungere la porta. [\textbf{Witness Phase}]
+	\item Alice entra nella caverna e grida a Bob il nome del sentiero con il quale dovrà tornare all'entrata. [\textbf{Challenge Phase}]
+	\item Se Bob conosce la parola segreta, riuscirà sempre ad aprire la porta e ritornarne da Alice con il sentiero richiesto. [\textbf{Response Phase}]
+\end{enumerate} \textbf{Se Bob appare in modo "affidabile" probabilmente conosce veramente il segreto.}"\\
+ }
+ \\Se si ipotizza che \textbf{Bob conosca veramente la parola magica}, è facile: se necessario apre la porta e ritorna attraverso il sentiero desiderato. È da notare che Alice non conosce il sentiero con il quale Bob ha raggiunto la porta.
+ \\Se si ipotizza però che \textbf{Bob non conosca il segreto}, egli avrebbe il 50\% di possibilità di ritornarne con il sentiero richiesto da Alice, per ogni prova effettuata. Seguendo il \textit{principio della probabilità ad eventi indipendenti}, la possibilità che Bob riesca ad adempire correttamente a tutte le richieste di Alice \textbf{senza conoscere il segreto} diventa statisticamente molto piccola (circa 0.01\%). Al contrario, se Bob risponde in modo affidabile ad ogni evento imposto da Alice, lei potrà essere statisticamente convinta che Bob sia effettivamente in possesso del segreto (circa 99.99\%).
+ \begin{figure}[htbp]
+	\centering
+        	\includegraphics[ width = \textwidth ]{ZKP_images/zkp_example_cave.png}
+        	\caption{ZKP, un esempio attraverso una storia astratta}
+\end{figure}
+
+\section{ZKP: Le Proprietà}
+La nozione di \textit{Zero Knowledge} fu introdotta negli anni '80 da un gruppo di ricercatori MIT (\textit{Goldwasser, Micali, Rackoff}) e descrive in modo molto più approfondito i concetti introdotti nelle sezioni precedenti.
+Attraverso un \textbf{Interactive Proof System} un Provider scambia dei messaggi con un Verifier per convincerlo che un certo \textit{Mathematical Statement} in suo possesso sia vero.
+\par 
+Una naturale conseguenza di questa introduzione pone un certo riguardo alla protezione del segreto del Verifier, mettendo in conto un possibile comportamento \textbf{malizioso} da parte del Prover (è un ente in una posizione avvantaggiata, \textit{ha tutto da guadagnare e nulla da perdere}): \textit{"un Prover malizioso tenta di ingannare un Verifier onesto nel credere ad uno statement falso"}.  Questo è un punto fondamentale nello studio di questo determinato approccio crittografico, a riguardo anche ad una possibile implementazione su sistemi informatici veri e propri. 
+\par
+I ricercatori MIT sollecitarono però una problematica opposta e assolutamente \textbf{non trascurabile}: \textit{"E se un Prover onesto non si potesse fidare di un Verifier, in questo caso, malizioso?"}. Questa situazione concerne il problema dell'\textbf{\color{teal} information leakage}: di quanto dettaglio/informazioni-extra ha effettivamente bisogno il Verifier durante la fase di valutazione del Proof fornito da un Prover? Il Verifier si basa sulla esclusiva fiducia che il Proof fornito dal Prover sia attendibile e non malizioso, ossia associato ad un segreto veritiero.
+Di conseguenza, entrambi i lati del protocollo (a.k.a. Prover \& Verifier) necessitano di \textbf{sicurezze} sulle intenzioni dell'altra entità in comunicazione.
+\\ \\
+Vi è la necessità di introdurre delle \textbf{proprietà fondamentali} che ogni \textit{Zero Knowledge Protocol} deve possedere ed implementare:
+\begin{itemize}
+	\item[\textbf{Completeness}] (completezza): Se lo \textit{statement} del Proof è veritiero, un Prover onesto riuscirà sempre a convincere un Verifier altrettanto onesto. La probabilità non corrisponderà mai al 100\%, ma l'obiettivo è quello di avvicinarsi il più possibile.
+	\item[\textbf{Soundness}] (solidità/correttezza): Se lo \textit{statement} del Proof è falso, nessun Prover malizioso potrà convincere un Verifier onesto che l'affermazione sia vera; la probabilità di riuscire di convincerlo è resa il più bassa possibile, tenendo conto dei meccanismi utilizzati per implementare il protocollo.
+	\item[\textbf{Zero Knowledge}] (conoscenza zero): E' la proprietà che da il nome alla tecnica crittografica e garantisce che il Prover non condivida troppe informazioni, anche sensibili, ad un Verifier (onesto o disonesto che sia). Se lo statement risulta veritiero, nessun Verifier disonesto potrà sapere altro che tale informazione. 
+\end{itemize}
+
+\newpage
+\subsection{Un esempio più tecnico} 
+In questo caso l'impostazione del modello è la seguente:
+\begin{itemize}
+	\item Un Prover conosce un certo numero segreto \textit{S} e vuole dimostrarlo ad un Verifier.
+	\item Alla base del meccanismo di generazione del Proof, della computazione di una risposta da parte del Prover e del meccanismo di validazione degli statement da parte del Verifier, vi è l'\textbf{aritmetica modulare}.
+\end{itemize}
+L'esecuzione del protocollo vedrà le fasi introdotte in precedenza, con l'aggiunta di una quarta fase (\textit{Verification Phase}) a carico del Verifier.
+\\ \\ \textbf{Esecuzione}
+\begin{enumerate}
+	\item \textbf{Witness Phase}: Il Prover computa 
+	\[
+		v = s^2 (mod n) \quad \textrm{con} \quad n=p q \quad \textrm{e}  \quad \sqrt{n} \leq s \leq n-1 \quad \textrm{e}  \quad s \neq (p \wedge q)
+	\]
+	L'avversario non può estrarre il segreto \textit{s} dal numero computato \textit{v}. \\  I numeri \textit{p} e  \textit{q} sono due  \textit{large private primes}, ossia il risultato della moltiplicazione di due numeri primi. \\
+	Il Prover sceglie un intero randomico \textit{r} in \( \big(1 \leq r \leq n-1 \big) \) e computa 
+	\[
+		x = r^2 (mod n) \qquad \textrm{dove x rappresenta uno \textbf{statement}}
+	\]
+	ed infine invia \textit{x} al Verifier.
+	
+	\item \textbf{Challenge Phase}: Il Verifier sceglie
+	\[
+	\textrm{un bit } \alpha \in  \big\{ 0,1 \big\}
+	\]
+	e lo invia al Prover. \\
+	Ogni bit descrive una challenge differente da proporre al Prover.
+	
+	\pagebreak
+	\item \textbf{Response Phase}: In base al bit \(\alpha\) ricevuto, il prover svolgerà una challenge differente:
+	\begin{itemize}
+		\item[Se \( \alpha = 0\)]: il Prover imposta il Proof come
+		\[
+		\textrm{\textbf{Proof}} \quad \varphi = r
+		\]
+		\item[Se \( \alpha = 1\)]: il Prover computa il Proof come
+		\[
+		\textrm{\textbf{Proof}} \quad \varphi = r s (mod n)
+		\]
+	\end{itemize}
+	Successivamente invia il Proof  \(\varphi\) al Verifier.
+	
+	\item \textbf{Verification Phase}: Il Verifier valida il Proof \(\varphi\) ricevuto dal Prover. Se vale  
+	\[
+		\varphi^2 = x(v^\alpha) (mod n)
+	\]
+	allora accetta il \(\varphi\) ricevuto. \\
+	Decide poi se inoltrare una nuova \textit{challenge} al Prover o confermare che quest'ultimo conosce effettivamente il segreto. \\
+\end{enumerate}
+\par
+Questa implementazione verifica le proprietà chiave di ogni ZKP:
+\begin{itemize}
+	\item[\textbf{Completeness}]: Presupponendo che il \textit{segreto s} conosciuto dal Prover sia \textit{vero},  egli riesce sempre ad inoltrare un Proof (
+	\( 
+		\varphi = r \quad \textrm{o} \quad  \varphi = r s (mod n)
+	\)
+	) corretto al Verifier, dato che può computare senza problemi lo \textit{statement x}.
+	\item[\textbf{Soundness}]: Se il Prover non conosce il \textit{segreto s} reale, ad ogni \textit{challenge} ricevuta dal Verifier avrà il 50\% di probabilità di inviargli un Proof \(\varphi\) corretto, ossia che riesca a passare la \textit{Validation Phase}. Al contrario, il Verifier rifiuterà il Proof \(\varphi\) fornito dal Prover sempre con una probabilità del 50\%, per ogni evento effettuato. E' quindi un modello molto simile al problema della caverna; un Prover malizioso non riuscirà ad ingannare per sempre un Verifier onesto. \\
+Se \(\varphi\) è verificato \textit{T} volte, la probabilità del Prover di ingannare il Verifier risulta
+\[
+	P(E) = (\frac{1}{2})^T
+\]
+con l'evento \(\big\{E: \textrm{Il Prover inganna il Verifier senza conoscere il \textit{segreto s}} \big\}\)
+\item[\textbf{Zero Knowledge}]: Il Verifier conosce solamente i numeri \textit{v, x, \(\varphi\)}, per ogni esecuzione del protocollo. Il Prover ha la garanzia di poter mantenere private le sue informazioni sensibili, ma soprattutto, ha la sicurezza, grazie all'aritmetica modulare, che il Verifier non possa risalire al suo \textit{segreto s} conoscendo solamente i valori da egli forniti.
+\end{itemize}
+Grazie all'implementazione di queste tre proprietà, sia un Prover onesto che un Verifier onesto sono protetti da attacchi maliziosi.
+
+\newpage
+\section{ZKP: Classificazione}
+Gli esempi di Zero Knowledge Proof illustrati nelle sezioni precedenti richiedono tutti l'interazione diretta tra le due entità comunicanti, attraverso lo schema di \textit{domande \& risposte}. 
+Ne risalta quindi un'importante caratteristica: l'\textbf{interazione}.
+Basandosi su questa si può evidenziare una prima classificazione dei \textit{Zero Knowledge Proof}:
+\begin{itemize}
+	\item \textbf{Interactive Zero Knowledge Proofs}: si basano su una \textit{comunicazione sincrona} e diretta tra i due enti comunicanti. In questo modello, il Verifier metterà a disposizione del Prover una serie di \textit{task} o azioni, che dovrà risolvere per dimostrare di possedere realmente un Witness o segreto. Generalmente il lavoro del Prover risulta computazionalmente più oneroso, in base al meccanismo/algoritmo richiesto per risolvere i task richiesti. 
+	\item \textbf{Non-Interactive Zero Knowledge Proofs}: In questo caso non vi è la necessità di avere un interazione diretta tra Prover e Verifier; la \textit{validazione} del \textit{proof} fornito dal Prover può essere sostenuta ad uno stage più avanzato, anche da un terzo ente fidato. Questa tipologia di ZKP può richiedere l'utilizzo di \textit{software} e \textit{risorse} addizionali, ed utilizza una comunicazione \textit{asincrona} tra Prover e Verifier.
+\end{itemize}
+\begin{figure}[hbtp]
+	\centering
+        	\includegraphics[ width = \textwidth, height = 14.5em  ]{ZKP_images/zkp_ni2.png}
+	\caption{Non-Interactive ZKP}
+\end{figure}
+
+\subsection{Uno sguardo più mirato: Interactive ZKP}
+Agli albori di questo approccio crittografico, le sue applicazioni ed integrazioni vedevano principalmente la filosofia di tipo \textit{Interactive ZKP}. Questo tipologia di integrazione però coinvolge un approccio che si rivolge principalmente verso un ambito molto più applicativo e matematico, coinvolgendo soprattutto i sistemi informatici. 
+In questo caso il \textit{Zero Knowledge Proof} viene utilizzato per dimostrare a qualcuno la conoscenza di un fatto \textit{matematico}, senza rivelarne però nessun informazione sensibile sullo stesso. 
+\par
+In tempi recenti però l'applicazione di questo tipo di approccio crittografico viene vista ed utilizzata principalmente nei sistemi distribuiti, soprattutto nell'ambito delle \textit{blockchain}. Per questioni di prestazioni, sicurezza ed evoluzione del modello, si tende a preferire un approccio più \textit{Non Interactive ZKP}.
+\par
+E' comunque importante evidenziare certi casi nei quali è consigliato un approccio \textit{Interactive}:
+\begin{itemize}
+	\item \textbf{Knowledge of a three-coloring graph}: è un problema molto richiesto in ambito delle telecomunicazioni dove il modello si basa sulla teoria dei grafi. Sia il Prover che il Verifier conoscono un certo grafo pubblico: il Prover vuole dimostrare di possedere un algoritmo che permette di ottenere un'istanza dello stesso grafo ma a 3 colori, dove ogni nodo ne tocca almeno un altro con un colore differente dal suo. Da questo tipo di problema ne deriva un modello non-interactive ampiamente utilizzato in blockchain: il \textbf{zkSnark}.
+	\begin{figure}[hbtp]
+	\centering
+        	\includegraphics[ width = \textwidth  ]{ZKP_images/zkp_graph1.png}
+	\caption{varie istanze three-coloring di un certo grafo pubblico}
+\end{figure}
+	\newpage
+	\item \textbf{Knowledge of a discrete logarithm of some residue module p}: dato un numero primo pubblico \textit{g} detto \textit{generatore}, un numero primo pubblico \textit{p} detto \textit{modulo} e un certo \textit{residuo r}, conosco un certo valore \textit{x} tale che 
+	\( 
+	\quad g^x = y (mod p)
+	\)
+	 , che è a tutti gli effetti la definizione di \textit{logaritmo discreto}.
+	 \item \textbf{Knowledge of a private key corresponding to a publicly-known public key}
+\end{itemize}
+
+\newpage
+\section{ZKP: Modelli di Implementazione}
+L'approccio della Dimostrazione a Conoscenza Zero trova grande applicazione nell'era del digitale e delle comunicazioni Internet ma, soprattutto, nella categoria dei \textit{Sistemi Distribuiti} con particolare riferimento alle \textit{Blockchain}.
+\par 
+Come illustrato, vi sono vari modelli e varie filosofie di implementazione di questo tipo di sistema crittografico; è utile introdurre e studiare diversi modelli ZKP pensati per un implementazione concreta. Questi modelli possono far parte della filosofia \textit{Interactive ZKP} o della \textit{Non-Interactive ZKP}.
+
+\subsection{zkSnark}
+Il modello zkSnark, acronimo di \textit{zero knowledge Succinct Non-interactive ARgumentoof Knowledge}, è un modello ZKP di tipo Non-Interactive il quale introduce una nuova proprietà: la \textbf{sinteticità} (\textit{succinct}). Questa sposta l'obiettivo del modello verso una migliore implementazione a livello di \textit{complessità}, quindi di un attento riguardo verso il dispendio computazionale delle risorse in gioco. 
+\par Il modello zkSnark coinvolge tre entità: un \textbf{Prover P}, un \textbf{ Verifier V} ed un terzo ente fidato detto \textbf{Setup S}. Quest'ultimo avrà il compito di generare una coppia di chiavi, necessarie a P e a S per poter, rispettivamente, generare un \textit{proof \(\pi\)} ed effettuarne la verifica dello stesso. 
+\par Ciò che è importante evidenziare in zkSnark sono le seguenti caratteristiche:
+\begin{enumerate}
+	\item La \textit{Verification Phase} è eseguita in un breve \textit{running time}.
+	\item La dimensione del proof \(\pi\) è di soli pochi bytes.
+	\item Il Prover ed il Verifier non sono obbligati a comunicare in modalità \textit{sincrona}.
+	\item Il proof \(\pi\) può essere verificato da un qualsiasi Verifier, secondo una filosofia di tipo \textbf{off-line way}.
+	\item L'algoritmo che il Prover P dovrà eseguire appartiene alla \textbf{classe di complessità NP}.
+\end{enumerate}
+\par Queste caratteristiche verranno approfondite nel capitolo successivo, dedicato interamente al modello zkSnark. \\
+
+%ZKSNARK REQUIREMENTS TABLE
+\begin{tabular}{ | | c | c | | }
+\hline
+\multicolumn{2}{ | | c | |}{\textbf{zkSnark Requirements}} \\
+\hline \hline \hline
+\textbf{Trusted Setup} & Required \\
+ \hline
+\textbf{Prover Algorithm} & \(O(nlogn)\) \\ 
+ \hline
+\textbf{Verifier Algorithm} & \(O(1)\) \\ 
+ \hline
+\textbf{Proof Size / Communication complexity} & \(O(1)\) \\
+ \hline
+\textbf{Implementation Technique} & Quadratic Arithmetic Programs \\
+\hline
+\end {tabular}
+%END TABLE
+
+ \begin{figure}[h]
+	\centering
+        	\includegraphics[ width = 22em ]{ZKP_images/snark4.png}
+        	\caption{zkSnark schema}
+\end{figure}
+
+\subsubsection{Ben-Sasson's Model}
+Basandosi su zkSnark, \textit{Ben-Sasson et al.} proposero un nuovo modello zkSnark per circuiti aritmetici, incentrando il loro obiettivo nello scindere in due processi indipendenti la creazione di una coppia di chiavi dalla validazione di un proof tra due entità; questo modello vede quindi la distinzione tra una \textbf{off-line phase} ed una \textbf{on-line phase}. Dato che si basa su zkSnark, anche questo modello vede l'utilizzo di \textbf{NP-Statements}, i quali sono istanze di \textbf{NP-Problems} che possono essere verificate/provate seguendo le proprietà di \textit{Zero Knowledge}.
+\begin{itemize}
+	\item[\textbf{Off-line Phase}]: Il Setup S in questo caso viene sostituito da un \textit{zkSnark key generator}, il quale prende in ingresso un \textit{circuito universale}, otteunuto da un programma generatore di circuiti a partire da tre vincoli strutturali usati come input: un \textbf{program size bound}, \textbf{input size bound} ed un \textbf{time bound}. Il \textit{zkSnark KG} genera la coppia di chiavi (PK, VK) a partire dal circuito universale ottenuto.
+	\item[\textbf{On-line Phase}]:  Un Prover P computa un certo \textit{proof \(\pi\)} a partire da un \textit{circuito assegnato} e dalla chiave PK ricevuta dallo \textit{zkSnark KG} della \textit{off-line phase}. Il Circuito è il risultato della computazione di una certa \textit{Witness map}, la quale rappresenta la conoscenza del segreto da parte di P.
+	\par Un Verifier V riceve un certo \textit{proof \(\pi\)} da un Prover. Deciderà se accettarlo o rifiutarlo usando la chiave VK ricevuta dallo \textit{zkSnark KG}.
+\end{itemize}
+Il vantaggio di questo modello vede l'aggiunta di un ulteriore livello di integrità e privacy a riguardo della generazione di una coppia di chiavi (PK, VK) coinvolte nella \textit{generazione/validazione} di un  \textit{proof \(\pi\)}. \\
+\begin{figure}[h]
+	\centering
+        	\includegraphics[ width = 25em ]{ZKP_images/ben-sasson.png}
+        	\caption{Ben-Sasson's zkSnark schema}
+\end{figure}
+
+\begin{comment}
+
+\newpage
+\subsection{Ligero}
+
+
+
+
+\subsection{Bulletproofs}
+\subsection{Hyrax}
+\subsection{Aurora}
+\subsection{Libra}
+
+
+\end{comment}
+
+
+
+
+
+
+
+
+
+
+
+
+%VERY DETAILED CHAPTER ABOUT ZKSNARK 
+\newpage
+\chapter{zkSnark: \textit{zero knowledge Succint Non-Interactive Argument of Knowledge}}
+%Paragraph aligned to left
+\begin{minipage}{0.7\textwidth}\raggedright
+Questo modello vede l'implementazione di una tipologia di Zero Knowledge \textit{Non-Interactive} e si basa sulla teoria dei grafi detta \textit{SNARK (Succint Non Interactive Argument Of Knowledge)}. Uno snark è un grafo cubico connesso, privo di ponti, con indice cromatico uguale a 4.
+\end{minipage}
+\noindent\begin{minipage}{0.3\textwidth}
+\includegraphics[width=\linewidth]{ZKP_Images/snark2.png}
+\end{minipage}
+%End paragraph aligned
+\par In altre parole, uno \textbf{snark} è un grafo in cui ogni vertice ha tre nodi vicini, basandosi sulla condizione che gli spigoli non possono essere colorati solo con tre colori senza che due spigoli dello stesso colore si incontrino in un punto.
+\par La filosofia zkSnark venne introdotta nel 2012 in un articolo pubblicato da \textit{Bitanksy Nir}. Una prima implementazione fu integrata nel protocollo \textit{\textbf{Zerocash blockchain}}, divenendo la colonna portante del lavoro computazionale svolto per ottenere una validazione sull'aggiunta di blocchi, introducendo la possibilità ad un certo party di creare e gestire dei \textbf{mathematical proofs} per dimostrare di possedere o meno un certo tipo di informazione, senza rinunciare alla sua integrità.
+
+%WHY IS IT NOT INDEXED?
+\section{zkSnark: La struttura}
+Essendo un modello Non-Interactive, l'interazione tra Prover e Verifier viene gestita da un terzo ente fidato ad entrambi: un \textit{setup}, che mette a disposizione del protocollo circuiti e software aggiuntivi. Nel caso di zkSnark quindi, il modello vede la presenza di tre enti in comunicazione asincrona: un \textbf{Prover P}, un \textbf{Verifier V} ed un \textbf{Setup S}.
+\par
+Viene introdotto l'utilizzo di una coppia di chiavi, dette \textbf{Proving Key [PK]} e \textbf{Validation Key [VK]}, necessarie al Prover ed al Verifier per poter portare a termine la loro comunicazione/validazione:
+\begin{itemize}
+	\item[\textbf{Proving Key, PK}]: utilizzata da P per computare un \textit{proof \(\pi\)} verificabile. 
+	\item[\textbf{Validation Key, VK}]: utilizzata da V per verificare un \textit{proof \(\pi\)} generato da P attraverso PK. 
+\end{itemize}
+
+ Queste chiavi sono generate e distribuite da S attraverso un algoritmo di \textit{Generazione KG}, il quale prende in ingresso due parametri: un valore predefinito di sicurezza \(\lambda\) ed un \textit{F-arithmetic circuit C}. \\
+\par
+Il modello definisce \textbf{tre algoritmi indipendenti}, destinati alle entità del protocollo:
+\begin{itemize}
+	\item[+]\textbf{Key Generator KG [Setup]}: \(KG(\lambda, C)\)
+	\item[+]\textbf{Proof Generator PG [Prover]}: \(PG(PK, x, W)\)
+	\item[+]\textbf{Proof Validator PV [Verifier]}: \(PV(VK, x, \pi)\)
+\end{itemize}
+
+%minipage block
+\setlength\fboxrule{1.2pt}
+\fbox{\begin{minipage}{\textwidth}
+Legenda: \raggedright \\
+\(\lambda\): \textit{parametro di sicurezza} \raggedleft \\ 
+\(\textrm{C}\): \textit{circuito aritmetico con input ed output \(\in\) campo F} \raggedleft \\
+PK: \textit{proving key, PK \(\in F\)} \raggedleft \\
+VK: \textit{validation key, VK \(\in F\)} \raggedleft \\
+x: \textit{input pubblico di P, hashed value x} \(\in F^n\) \raggedleft \\
+W: \textit{input segreto di P,  witness value w} \(\in F^h\) \raggedleft \\
+\(\pi\): \textit{proof generato da P, proof value } \(\pi \in F^h\) \raggedleft \\
+\end{minipage}}
+%end minipage 
+\\ \\ \\
+Di seguito uno schema di implementazione del modello zkSnark.
+ \begin{figure}[h]
+	\centering
+        	\includegraphics[ width = 22em ]{ZKP_images/snark4.png}
+        	\caption{zkSnark schema}
+\end{figure}
+
+\section{zkSnark: I ruoli delle entità}
+Data la natura del modello, è importante scindere i ruoli delle tre entità in gioco ma, soprattutto, definire ed analizzare gli algoritmi che verranno eseguiti ad ogni livello della comunicazione.
+\begin{itemize}
+	\item[\textbf{Setup S}]: il compito di S è quello di generare una coppia unica di chiavi \textit{(PK,VK)} da distribuire ad un P ed un V, in modo che possano comunicare tra loro per eseguire una verifica a Zero Knowledge. Egli esegue l'algoritmo di Key Generator \(KG(\lambda, C)\), a partire da un parametro \(\lambda\) sicuro e sconosciuto sia a P che a V. Quindi: 
+	\[
+	\textrm{(PK, VK)} = KG(\lambda, C)
+	\]
+	con 
+	\textit{C F-arithmetic circuit};
+		 \(\textrm{PK, VK} \in F\);
+		 \textit{F è un Field/Campo}.
+	\par L'introduzione di questo ente terzo e fidato è fondamentale: permette di tenere privato il parametro di sicurezza  \(\lambda\); di fatti, tramite questo, vi è la possibilità di eseguire l'algoritmo KG per la generazione di chiavi. Se \(\lambda\) fosse conosciuto da P od S, sarebbero introdotte delle problematiche di integrità della comunicazione stessa. Allora si possono analizzare due situazioni differenti che descrivono questa falla di sistema, risolta dall'affidamento ad S dell'esecuzione dell'algoritmo KG:
+	\begin{itemize}
+		\item[V esegue KG]: se V ha il compito di eseguire KG, avrà anche il compito di scegliere casualmente il parametro di sicurezza \(\lambda\) per creare la coppia di chiavi. In questo schema il problema si focalizza sul mantenimento dell'integrità di \(\lambda\) da parte di V: se P fosse in grado di conoscere od ottenere \(\lambda\) usato da V per la comunicazione instaurata, sarebbe in grado lui stesso di generare {\color{red}fake proofs}.
+		\item[P esegue KG]: al contrario, se un Prover P avesse il compito di generare una coppia di chiavi per la comunicazione, un verifier V onesto non potrebbe mai accettare da P nessun \(\pi\) \textit{proof} ricevuto, dato che è P a scegliere il parametro \(\lambda\), avendo anche la possibilità di cambiarlo quando vuole per generare proofs maliziosi.
+	\end{itemize} 
+	\par La soluzione vive quindi nel mezzo: \textbf{\textit{"il generatore di chiavi KG viene affidato ad un entità/gruppo fidato sia per P che per V. In questo modo il parametro \(\lambda\) sarà nascosto ad entrambi, rimanendo privato e conosciuto solo al third party. Quest'ultimo avrà quindi il compito di generare e distribuire a P e V una coppia di chiavi (PK, VK), da utilizzare appositamente per la verifica di certo un segreto W partendo da un circuito aritmetico prestabilito C."}}
+	\item[\textbf{Prover P}]: partendo da una chiave PK ricevuta da S, genera un \textbf{proof \(\pi\)}, tale che: 
+	\[ \pi = PG(PK, x, W)\]
+	con \(PK \in F, \quad x \in F^n, \quad W \in F^h\). \\
+	Questo proof generato viene inviato a V e dimostra che P consce un \textit{witness/segreto W} e che questo witness soddisfa il \textit{circuito aritmetico C} conosciuto. Di fatti, il circuito aritmetico C definisce un certo \textbf{programma}, tale che: 
+	\[C( x, W) = 0^l\]
+	Il risultato di C, può essere visto come un valore \textit{booleano} che descrive la validità di un certo \textit{segreto W} attraverso il circuito aritmetico stesso computando un \textbf{messaggio} in uscita dallo stesso. Questa nozione è fondamentale a livello del Verifier V.
+	
+	\item[\textbf{Verifier V}]: riceve un certo \textbf{proof \(\pi\)} da P e, partendo dalla chiave VK ricevuta da S, computa la verifica di \(\pi\) ricevuto tramite l'algoritmo PV, tale che:
+	\[PV(VK, x, \pi) = True/False\] 
+	allora, \( \quad PV(VK, x, \pi) == ( \exists W \mid C(x, W)) \)
+\end{itemize}
+
+\section{zkSnark: La Complessità}
+
+\end{document}
