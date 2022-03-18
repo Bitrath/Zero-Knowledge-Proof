@@ -2,6 +2,7 @@
 \usepackage[latin1]{inputenc}
 \usepackage[italian]{babel}
 \usepackage{graphicx, xcolor, enumitem, lipsum, setspace, amsmath, verbatim}
+\usepackage{csquotes}
 \setstretch{1.25}
 
 \title{\textit{Zero Knowledge Proof} \\ Fundamentals and Applications}
@@ -74,7 +75,7 @@ I due interlocutori saranno:
 	\item Alice aspetta fuori all'entrata mentre Bob entra nella caverna; Bob sceglie uno dei due sentieri da percorrere tra A e B per raggiungere la porta. [\textbf{Witness Phase}]
 	\item Alice entra nella caverna e grida a Bob il nome del sentiero con il quale dovrà tornare all'entrata. [\textbf{Challenge Phase}]
 	\item Se Bob conosce la parola segreta, riuscirà sempre ad aprire la porta e ritornarne da Alice con il sentiero richiesto. [\textbf{Response Phase}]
-\end{enumerate} \textbf{Se Bob appare in modo "affidabile" probabilmente conosce veramente il segreto.}"\\
+\end{enumerate} \textbf{Se Bob appare in modo affidabile probabilmente conosce veramente il segreto.}"\\
  }
  \\Se si ipotizza che \textbf{Bob conosca veramente la parola magica}, è facile: se necessario apre la porta e ritorna attraverso il sentiero desiderato. È da notare che Alice non conosce il sentiero con il quale Bob ha raggiunto la porta.
  \\Se si ipotizza però che \textbf{Bob non conosca il segreto}, egli avrebbe il 50\% di possibilità di ritornarne con il sentiero richiesto da Alice, per ogni prova effettuata. Seguendo il \textit{principio della probabilità ad eventi indipendenti}, la possibilità che Bob riesca ad adempire correttamente a tutte le richieste di Alice \textbf{senza conoscere il segreto} diventa statisticamente molto piccola (circa 0.01\%). Al contrario, se Bob risponde in modo affidabile ad ogni evento imposto da Alice, lei potrà essere statisticamente convinta che Bob sia effettivamente in possesso del segreto (circa 99.99\%).
@@ -212,7 +213,7 @@ L'approccio della Dimostrazione a Conoscenza Zero trova grande applicazione nell
 Come illustrato, vi sono vari modelli e varie filosofie di implementazione di questo tipo di sistema crittografico; è utile introdurre e studiare diversi modelli ZKP pensati per un implementazione concreta. Questi modelli possono far parte della filosofia \textit{Interactive ZKP} o della \textit{Non-Interactive ZKP}.
 
 \subsection{zkSnark}
-Il modello zkSnark, acronimo di \textit{zero knowledge Succinct Non-interactive ARgumentoof Knowledge}, è un modello ZKP di tipo Non-Interactive il quale introduce una nuova proprietà: la \textbf{sinteticità} (\textit{succinct}). Questa sposta l'obiettivo del modello verso una migliore implementazione a livello di \textit{complessità}, quindi di un attento riguardo verso il dispendio computazionale delle risorse in gioco. 
+Il modello zkSnark, acronimo di \textit{zero knowledge Succinct Non-interactive ARgumentoof Knowledge}, è un modello ZKP di tipo Non-Interactive il quale introduce una nuova proprietà: la \textbf{sinteticità} (\textit{succinctness}). Questa sposta l'obiettivo del modello verso una migliore implementazione a livello di \textit{complessità}, quindi di un attento riguardo verso il dispendio computazionale delle risorse in gioco. 
 \par Il modello zkSnark coinvolge tre entità: un \textbf{Prover P}, un \textbf{ Verifier V} ed un terzo ente fidato detto \textbf{Setup S}. Quest'ultimo avrà il compito di generare una coppia di chiavi, necessarie a P e a S per poter, rispettivamente, generare un \textit{proof \(\pi\)} ed effettuarne la verifica dello stesso. 
 \par Ciò che è importante evidenziare in zkSnark sono le seguenti caratteristiche:
 \begin{enumerate}
@@ -262,32 +263,42 @@ Il vantaggio di questo modello vede l'aggiunta di un ulteriore livello di integr
         	\caption{Ben-Sasson's zkSnark schema}
 \end{figure}
 
-\begin{comment}
-
 \newpage
 \subsection{Ligero}
+Ligero è un modello che propone un \textit{argomento interattivo a zero knowledge} che vuole essere più compatto. La sua caratteristica principale è quella di non avere bisogno di un \textit{trusted setup} tra i due enti comunicanti. Fu introdotto in una pubblicazione scientifica scritta da \textit{Ames Scott et al.} e risalente al 2017. 
+\par Il vantaggio di questo protocollo vede l'implementazione di un argomento a zero knowledge partendo sempre da problemi NP la cui complessità computazionale risulta proporzionale alla radice quadrata della dimensione del circuito di verifica dell'argomento stesso. 
+\par Inoltre, Ligero può essere costruito a partire da una qualsiasi \textbf{funzione di hashing collision-resistant}. Alternativamente, può essere reso \textit{non-interactive} se basato sul modello \textbf{random-oracle}: 
+\begin{displayquote}
+Un modello random-oracle è utilizzato per modellare funzioni crittografiche di hashing all'interno di schemi dove sono necessarie delle forti assunzioni di randomicità sull'output della stessa funzione hash. Un \textbf{random-oracle} o \textit{scatola nera}, è una funzione matematica che associa ogni possibile domanda ad una risposta casuale, scelta uniformemente all'interno del suo dominio di output.
+\end{displayquote}
+Ligero riesce quindi ad implementare con gran efficenza e concretezza degli argomenti zkSNARK che non richiedono la presenza di un \textbf{trusted setup} o \textbf{public key cryptosystem}. Questo li rende estremamente efficaci in presenza di circuiti di verifica ad ampie dimensioni. \\
+ 
+%LIGERO REQUIREMENTS TABLE
+\begin{tabular}{ | | c | c | | }
+\hline
+\multicolumn{2}{ | | c | |}{\textbf{Ligero Requirements}} \\
+\hline \hline \hline
+\textbf{Trusted Setup} & Not Required \\
+ \hline
+\textbf{Prover Algorithm} & \(O(n logn)\) \\ 
+ \hline
+\textbf{Verifier Algorithm} & \(O(n)\) \\ 
+ \hline
+\textbf{Proof Size / Communication complexity} & \(O(\sqrt{n})\) \\
+ \hline
+\textbf{Implementation Technique} & Interactive Oracle Proofs \\
+\hline
+\end {tabular}
+%END TABLE
 
-
-
-
+\newpage
 \subsection{Bulletproofs}
+
+\begin{comment}
 \subsection{Hyrax}
 \subsection{Aurora}
 \subsection{Libra}
-
-
 \end{comment}
-
-
-
-
-
-
-
-
-
-
-
 
 %VERY DETAILED CHAPTER ABOUT ZKSNARK 
 \newpage
@@ -373,5 +384,15 @@ Data la natura del modello, è importante scindere i ruoli delle tre entità in gi
 \end{itemize}
 
 \section{zkSnark: La Complessità}
+
+
+
+
+
+
+
+
+
+
 
 \end{document}

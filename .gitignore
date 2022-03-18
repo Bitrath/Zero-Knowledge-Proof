@@ -1,0 +1,8 @@
+#tex images
+ZKP_Images/*
+
+#tex bin files
+Article_ZKP.aux
+Article_ZKP.log
+Article_ZKP.synctex.gz
+Article_ZKP.toc
