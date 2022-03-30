@@ -12,4 +12,9 @@ Latex/Book_ZKP.synctex.gz
 Latex/Book_ZKP.toc
 
 #pyZkp
-pyZkp/__pycache__/*
+pyZkp/__pycache__/entities.cpython-39.pyc
+
+#mac
+.DS_Store
+Latex/.DS_Store
+pyZkp/.DS_Store

@@ -1,7 +1,8 @@
 \documentclass[10pt]{article}
 \usepackage[latin1]{inputenc}
 \usepackage[english]{babel}
-\usepackage{graphicx, xcolor, enumitem, lipsum, setspace, amsmath, verbatim}
+\usepackage{graphicx, enumitem, lipsum, setspace, amsmath, verbatim}
+\usepackage[dvipsnames]{xcolor}
 \usepackage{csquotes}
 
 \title{\textit{Zero Knowledge Proof} \\ Fundamentals and Applications}
@@ -237,22 +238,48 @@ Ligero riesce quindi ad implementare con gran efficenza e concretezza degli argo
 
 % --- SUB /  SUB / Bulletproofs ---
 \subsubsection{Bulletproofs}
+Bulletproofs è un modello di dimostrazione a zero knowledge che è strutturato sul problema del logaritmo discreto e fu introdotto da \textit{Bunz et al.} in una pubblicazione scientifica apposita. Questo modello è stato pensato per migliorare la natura distribuita e trustless delle Blockchains, dando la possibilità di apportare sostanziali miglioramenti sulla sicurezza e confidenzialità delle transazioni in criptovalute.
+Per ottenere questi risultati, il modello è strutturato come un \textit{Non-Interactive Zero Knowledge Proof} protocol che garantisce una dimensione contenuta dei \textit{proof} e che non richiede un \textit{setup fidato}. I Bulletproofs migliorano di molto la dimensione lineare,  contenuta in \textit{n}, dei proof normalmente utilizzati in transazioni confidenziali per Bitcoin e altre criptovalute. Inoltre, i Bulletproofs supportano una funzione molto importante e che riguarda il concetto di \textit{range proofs}: il \textit{multi-party computation ( MPC ) }protocol, che permette di aggregare i proof di un party di entità in un unico proof risultante, il quale non permette di rivelare nessun informazione dei segreti dei proof contenuti. I Bulletproofs sono costruiti sulla tecnina EUROCRYPT 2016, sempre formulata dal gruppo di ricercatori a capo del progetto. In poche parole, questi sono i punti chiave che questo modello introduce: 
+\begin{itemize}
+	\item Short zero-knowledge proofs for general arithmetic circuits, based on the discrete logarithm assumption without a trusted setup.
+	\item Extremely efficient range proofs implemented via the MPC protocol.
+	\item Applications focused onto an improving transaction confidentiality for the Blockchain environment. \\
+\end{itemize}
 
+% --- Bulletproofs Table ---
+\begin{tabular}{ | | c | c | | }
+\hline
+\multicolumn{2}{ | | c | |}{\textbf{Bulletproofs Requirements}} \\
+\hline \hline \hline
+\textbf{Trusted Setup} & Not Required \\
+ \hline
+\textbf{Prover Algorithm} & \(O(c)\) \\ 
+ \hline
+\textbf{Verifier Algorithm} & \(O(c)\) \\ 
+ \hline
+\textbf{Proof Size / Communication complexity} & \(O(\log{n})\) \\
+ \hline
+\textbf{Implementation Technique} & Discrete Logarithm \\
+\hline
+\end {tabular}
+
+% --- SUB / ZKP Applicazioni ---
+\subsection{ZKP: Le Applicazioni}
 
 % --- zkSNARK ---
 \section{zkSnark: \textit{zero knowledge Succint Non-Interactive Argument of Knowledge}}
-Questo modello vede l'implementazione di una tipologia di Zero Knowledge \textit{Non-Interactive} e si basa sulla teoria dei grafi detta \textit{SNARK (Succint Non Interactive Argument Of Knowledge)}. Uno snark è un grafo cubico connesso, privo di ponti, con indice cromatico uguale a 4.
+Questo protocollo vede l'implementazione del modello di Zero Knowledge \textit{Non-Interactive} e si basa sulla teoria dei grafi detta \textit{SNARK (Succint Non Interactive Argument Of Knowledge)}. Uno snark è un grafo cubico connesso, privo di ponti, con indice cromatico uguale a 4.
 % --- MINI PAGE with FIGURE 7 ---
  In altre parole, uno \textbf{snark} è un grafo in cui ogni vertice ha tre nodi vicini, basandosi sulla condizione che gli spigoli non possono essere colorati solo con tre colori senza che due spigoli dello stesso colore si incontrino in un punto. La filosofia zkSnark venne introdotta nel 2012 in un articolo pubblicato da \textit{Bitanksy Nir}. Una prima implementazione fu integrata nel protocollo \textit{\textbf{Zerocash blockchain}}, divenendo la colonna portante del lavoro computazionale svolto per ottenere una validazione sull'aggiunta di blocchi, introducendo la possibilità ad un certo party di creare e gestire dei \textbf{mathematical proofs} per dimostrare di possedere o meno un certo tipo di informazione, senza rinunciare alla sua integrità.
  
  % --- SUB / La Struttura ---
 \subsection{zkSNARK: La Struttura}
-Essendo un modello Non-Interactive, l'interazione tra Prover e Verifier viene gestita da un terzo ente fidato ad entrambi: un \textit{setup}, che mette a disposizione del protocollo circuiti e software aggiuntivi. Nel caso di zkSnark quindi, il modello vede la presenza di tre enti in comunicazione asincrona: un \textbf{Prover P}, un \textbf{Verifier V} ed un \textbf{Setup S}. Viene introdotto l'utilizzo di una coppia di chiavi, dette \textbf{Proving Key [PK]} e \textbf{Validation Key [VK]}, necessarie al Prover ed al Verifier per poter portare a termine la loro comunicazione/validazione:
+Essendo un modello Non-Interactive, l'interazione tra Prover e Verifier viene gestita da un terzo ente fidato ad entrambi detto \textit{setup}. Il setup mette a disposizione del protocollo dei circuiti e software aggiuntivi com aiuto alla dimostrazione. Nel caso di zkSnark, il modello vede la presenza di tre enti in comunicazione asincrona: un \textbf{Prover P}, un \textbf{Verifier V} ed un \textbf{Setup S}. Viene introdotto l'utilizzo di una coppia di chiavi, dette \textbf{Proving Key [PK]} e \textbf{Validation Key [VK]}, necessarie a P ed S per scambiare dei messaggi:
 \begin{itemize}
 	\item[\textbf{Proving Key, PK}]: utilizzata da P per computare un \textit{proof \(\pi\)} verificabile. 
 	\item[\textbf{Validation Key, VK}]: utilizzata da V per verificare un \textit{proof \(\pi\)} generato da P attraverso PK. 
 \end{itemize}
- Queste chiavi sono generate e distribuite da S attraverso un algoritmo di \textit{Generazione KG}, il quale prende in ingresso due parametri: un valore predefinito di sicurezza \(\lambda\) ed un \textit{F-arithmetic circuit C}. 
+Queste chiavi sono generate e distribuite da S attraverso un algoritmo di \textit{Generazione KG}, il quale prende in ingresso due parametri: un valore predefinito di sicurezza \(\lambda\) ed un \textit{F-arithmetic circuit C}. 
 Il modello definisce \textbf{tre algoritmi indipendenti}, destinati alle entità del protocollo:
 \begin{itemize}
 	\item[+]\textbf{Key Generator KG [Setup]}: \(KG(\lambda, C)\)
@@ -275,7 +302,7 @@ W: \textit{input segreto di P,  witness value w} \(\in F^h\) \raggedleft \\
 
  % --- SUB / Le Entità ---
 \subsection{zkSNARK: Le Entità}
-Data la natura del modello, è importante scindere i ruoli delle tre entità in gioco ma, soprattutto, definire ed analizzare gli algoritmi che verranno eseguiti ad ogni livello della comunicazione.
+Data la natura del modello, è importante scindere i ruoli delle tre entità in gioco per definire ed analizzare gli algoritmi che verranno eseguiti ad ogni livello della comunicazione.
 \begin{itemize}
 	\item[\textbf{Setup S}]: il compito di S è quello di generare una coppia unica di chiavi \textit{(PK,VK)} da distribuire ad un P ed un V, in modo che possano comunicare tra loro per eseguire una verifica a Zero Knowledge. Egli esegue l'algoritmo di Key Generator \(KG(\lambda, C)\), a partire da un parametro \(\lambda\) sicuro e sconosciuto sia a P che a V. Quindi: 
 	\[
@@ -285,7 +312,7 @@ Data la natura del modello, è importante scindere i ruoli delle tre entità in gi
 	\textit{C F-arithmetic circuit};
 		 \(\textrm{PK, VK} \in F\);
 		 \textit{F è un Field/Campo}.
-	\par L'introduzione di questo ente terzo e fidato è fondamentale: permette di tenere privato il parametro di sicurezza  \(\lambda\); difatti, tramite questo, vi è la possibilità di eseguire l'algoritmo KG per la generazione di chiavi. Se \(\lambda\) fosse conosciuto da P od S, sarebbero introdotte delle problematiche di integrità della comunicazione stessa. Allora si possono analizzare due situazioni differenti che descrivono questa falla di sistema, risolta dall'affidamento ad S dell'esecuzione dell'algoritmo KG:
+	\par L'introduzione di questo ente terzo e fidato è fondamentale: permette di tenere privato il parametro di sicurezza  \(\lambda\); tramite questo vi è la possibilità di eseguire l'algoritmo KG per la generazione di chiavi. Se \(\lambda\) fosse conosciuto da P od S, verrebbero introdotte delle problematiche di integrità della comunicazione stessa. Si possono quindi analizzare due situazioni differenti che descrivono questa falla di sistema, risolta dall'affidamento ad S l'esecuzione dell'algoritmo KG:
 	\begin{itemize}
 		\item[V esegue KG]: se V ha il compito di eseguire KG, avrà anche il compito di scegliere casualmente il parametro di sicurezza \(\lambda\) per creare la coppia di chiavi. In questo schema il problema si focalizza sul mantenimento dell'integrità di \(\lambda\) da parte di V: se P fosse in grado di conoscere od ottenere \(\lambda\) usato da V per la comunicazione instaurata, sarebbe in grado lui stesso di generare {\color{red}fake proofs}.
 		\item[P esegue KG]: al contrario, se un Prover P avesse il compito di generare una coppia di chiavi per la comunicazione, un verifier V onesto non potrebbe mai accettare da P nessun \(\pi\) \textit{proof} ricevuto, dato che è P a scegliere il parametro \(\lambda\), avendo la possibilità di cambiarlo per generare proofs maliziosi.
@@ -305,5 +332,54 @@ Data la natura del modello, è importante scindere i ruoli delle tre entità in gi
 
 % --- SUB / La Complessità --- 
 \subsection{zkSnark: La Complessità}
+Conoscendo la definizione delle proprietà fondamentali dei protocollo a Zero Knowledge, è intuibile come zkSNARK verifichi con facilità ognuna di queste: completeness, solidity e zero-knowledge. Questo protocollo non solo si distingue dagli altri per la necessità di dover coinvolgere un terzo ente nella dimostrazione, bensì introduce una nuova proprietà che ridefinisce lo standard dei zero knowledge proofs: la \textit{sinteticità} o \textbf{succinctness}. Essa descrive principalmente le caratteristiche del modello a livello di spesa computazionale; per parlare quindi della sinteticità di zkSNARK si deve fare un passo indietro e capire di cosa tratta l'insiemistica di problemi che questo protocollo utilizza: si parla della classe di problemi \textit{NP}.
+
+% --- SUB / SUB / Problemi NP --- 
+\subsubsection{Non Deterministic Polynomial Problems}
+Un problema di ottimizzazione \textit{R} fa parte della classe \textit{Non Deterministic Polynomial (NP)} quando nota la sua soluzione ottima, il valore ottimo del problema può essere calcolato in un tempo polinomiale. Per descrivere il lato "non deterministico" di questa classe di problemi, viene particolarmente utile la definizione rivista utilizzando il concetto di \textit{macchine di turing}: 
+
+\begin{displayquote}
+Un problema di ottimizzazione appartiene alla classe di complessità NP quando le sue soluzioni ottime possono essere verificate in un tempo polinomiale con una macchina di Turing \textit{non deterministica}, ossia che in presenza di un determinato stato e un determinato carattere letto, la macchina permette più operazioni/transizioni in contemporanea.
+\end{displayquote}
+
+Questa rappresenta una categoria molto ampia di problemi di ottimizzazione: non importa con che complessità un algoritmo ci porti una soluzione ottima del problema, basta che il valore ottimo ottenuto a partire da questa sia trovato in un tempo polinomiale. Diverso è invece per i problemi della classe \textit{Polynomial (P)}, i quali richiedono che esista un algoritmo \textit{A} che risolva il problema di ottimizzazione in un tempo strettamente polinomiale. E' comunque importante evidenziare una relazione tra queste due classi di problemi:
+\(P \in NP\). Se un problema appartiene alla classe P, egli farà parte anche della classe NP; non vale il viceversa.
+Quando si parla, generalmente, di Zero Knowledge Proof si sta analizzando una primitiva crittografica che si basa sulla compitazione di un \textit{NP Statement}, ossia un'istanza di un certo problema NP. La maggior parte dei protocolli a Zero Knowledge sono quindi costruiti sulla classe di problemi NP, mettendo a disposizione un'ampia varietà di algoritmi tramite i quali si possa sviluppare un modello in base alle proprie esigenze. Seguendo questa introduzione, si può dire che:  
+\begin{displayquote}
+un Prover P intende dimostrare ad un Verifier V che è in possesso di una valida soluzione W di un qualche \textit{problema NP pubblico}, ma senza rivelarne la soluzione stessa. Essa viene dimostrata grazie alla computazione, da parte di P, di uno statement NP, il quale verrà poi verificato in tutta sicurezza da V.
+\end{displayquote}
+
+% --- SUB / SUB /  Succinctness --- 
+\subsubsection{Succinctness}
+La sintenticità, \textit{succinctness}, richiede che il proof utilizzato dal modello sia \textbf{compatto} e \textbf{facilmente} verificabile. Questa proprietà risulta fondamentale ogniqualvolta un modello preveda un tipo di comunicazione \textbf{costosa} in termini di risorse, oppure quando il Verifier risulta debole a livello di risorse di computazione. Per i motivi citati nella sezione precedente, vi è particolare interesse nel utilizzare problemi della classe NP per modelli che prevedano l'implementazione della proprietà di sinteticità. Questo anche perché la classe NP risulta contenere la maggior parte di problemi reali e di ottimizzazione, tali: 
+\begin{itemize}
+	\item Boolean Satisfaction ( NP-complete \(\subset\) NP )
+	\item Polynomial Time on a Deterministic Turing Machine ( \textbf{sorting} ) : la classe NP contiene problemi che sono infatti risolvibili su una macchina di Turing ( non deterministica ) in tempo esponenziale o più veloce se possibile.
+\end{itemize}
+Allora quando si dice che 
+\begin{displayquote}
+un NP-Statement può essere provato in Zero Knowledge 
+\end{displayquote}
+vuol dire che una qualsiasi istanza di un problema NP può essere verificata in Zero Knowledge.
+\textbf{Gli zkSNARKs sono un esempio di NP-Statement}. \\
+
+% --- zkSNARK Table ---
+\begin{tabular}{ | | c | c | | }
+\hline
+\multicolumn{2}{ | | c | |}{\textbf{zkSnark Complexity Requirements}} \\
+\hline \hline \hline
+\textbf{Prover Algorithm} & \(O(nlogn)\) \\ 
+ \hline
+\textbf{Verifier Algorithm} & \(O(1)\) \\ 
+ \hline
+\textbf{\color{Red}Proof Size / Communication complexity} & \(\color{Red}O(1)\) \\
+ \hline
+\textbf{Implementation Technique} & Quadratic Arithmetic Programs \\
+\hline
+\end {tabular}
+
+
+
+
 
 \end{document}
