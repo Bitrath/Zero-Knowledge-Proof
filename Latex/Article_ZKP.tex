@@ -1,4 +1,5 @@
 \documentclass[10pt]{article}
+\usepackage[margin=1.3in]{geometry}
 \usepackage[latin1]{inputenc}
 \usepackage[english]{babel}
 \usepackage{graphicx, enumitem, lipsum, setspace, amsmath, verbatim}
@@ -265,6 +266,16 @@ Per ottenere questi risultati, il modello è strutturato come un \textit{Non-Inte
 
 % --- SUB / ZKP Applicazioni ---
 \subsection{ZKP: Le Applicazioni}
+Una parte importante di questo studio non riguarda solo la comprensione della letteratura e dei principali meccanismi di ZKP, bensì è fondamentale cercare di delineare delle aree nelle quali possa essere realmente applicato per averne un uso pratico. L'obiettivo di un applicazione pratica del protocollo riguarda principalmente la \textbf{protezione della privacy dei dati durante uno scambio di messaggi}. Oggigiorno sono presenti vari scenari nei i quali risulta conveniente implementare un certo tipo di approccio a Zero Knowledge, tali: 
+\begin{itemize}
+	\item \textbf{Blockchain}: Il livello di trasparenza che viene offerto da Blockchain pubbliche tali \textit{Bitcoin} o \textit{Etheruem} granatisce la possibilità di portare avanti un certo tipo di validazione delle transazioni in modo pubblico. Questo si può però tradurre in perdita di privacy per gli utenti coinvolti nelle transazioni validate. L'utilizzo dei protocolli a Zero Knowledge Proof permette quindi di stabilire un maggiore livello di privacy per gli utenti e dati coinvolti in  Blochckain pubbliche. Un esempio è la criptovaluta \textit{Zcash}, che pubblica le transazioni su di una Blockchain pubblica ma vede l'implementazione di zkSNARK per offrire una maggiore protezione sui dati sensibili della transazione e degli utenti.
+	\item \textbf{Finance}: Il Gruppo Bancario ING ha introdotto un modello di ZKP che si basa sul concetto di \textit{range}, detto \textbf{ZKRP}: questo permette ai suoi clienti di poter dimostrare di essere in possesso di un numero segreto contenuto in un raggio d'azione predefinito. Un semplice esempio applicativo di questo modello potrebbe offrire la possibilità ad un cliente della Banca che vuole prendere a carico un Mutuo, di dimostrare di percepire uno stipendio che possa sostenere i pagamenti, senza però rivelare la cifra esatta alla Banca.
+	\item \textbf{Anonymous Verifiable Online Voting}: Il concetto di \textbf{votazione} è una componente fondamentale per garantire democrazia, sia essa nei confronti di una Nazione o di una Società di Partecipazione. Nel caso la votazione sia strutturata via sistemi informatici, una problematica potrebbe riguardare la privacy degli elettori, i quali potrebbero essere coinvolti in una fuga di dati sensibili durante la votazione stessa, perdendo la proprietà di anonimato. Potrebbe anche risultare molto complicato portare avanti in modo sicuro il processo di verificazione del risultato della votazione. ZKP è una possibile soluzione per garantire un terreno equo e di anonimato in un processo di votazione. Basandosi sulla struttura di ZKP, degli elettori idonei posso esprimere una votazione con confidenzialità e garantendo il loro anonimato. E' anche possibile permettere agli elettori di richiedere, all'istituzione responsabile della votazione, un Proof verificabile per avere dimostrazione che il loro voto è presente nell'urna finale, decisiva per la votazione. 
+	\item \textbf{Authentication}: ZKP può essere utilizzato per il processo di autenticazione di utenti senza scambiare informazioni segrete e sensibili come  ad esempio possono essere le password. Un esempio di applicazione può riguardare un tipo di athenticazione remota e biometrica.
+	\item \textbf{Secure Remote Biometric Authentication}: L'autenticazione biometrica remota è un metodo che può essere utilizzato per identificare il login di un certo utente attraverso le sue caratteristiche biometriche, tali:  impronte digitali, immagini del viso, dell'iride o il riconoscimento di pattern vascolari. ZKP potrebbe essere implementato per risolvere un problema di sicurezza nella privatizzazione e confidenzialità dei dati inoltrati ad un third party non fidato per effettuare l'autenticazione. 
+	\item \textbf{Machine Learning}: ZKP può permette al proprietario di un certo algoritmo di Machine Learning di convincere altri utenti sui risultati ottenuti dal modello, senza rivelare nessuna informazione sensibile sul modello stesso.
+\end{itemize}
+Si può quindi dire che, analizzando brevemente queste soluzioni tramite ZKP per problemi reali, il principale campo di lavoro dell'approccio crittografico riguarda la privatizzazione e confidenzialità di un certo segreto sensibile durante una comunicazione tra due o più entità.
 
 % --- zkSNARK ---
 \section{zkSnark: \textit{zero knowledge Succint Non-Interactive Argument of Knowledge}}
@@ -332,26 +343,26 @@ Data la natura del modello, è importante scindere i ruoli delle tre entità in gi
 
 % --- SUB / La Complessità --- 
 \subsection{zkSnark: La Complessità}
-Conoscendo la definizione delle proprietà fondamentali dei protocollo a Zero Knowledge, è intuibile come zkSNARK verifichi con facilità ognuna di queste: completeness, solidity e zero-knowledge. Questo protocollo non solo si distingue dagli altri per la necessità di dover coinvolgere un terzo ente nella dimostrazione, bensì introduce una nuova proprietà che ridefinisce lo standard dei zero knowledge proofs: la \textit{sinteticità} o \textbf{succinctness}. Essa descrive principalmente le caratteristiche del modello a livello di spesa computazionale; per parlare quindi della sinteticità di zkSNARK si deve fare un passo indietro e capire di cosa tratta l'insiemistica di problemi che questo protocollo utilizza: si parla della classe di problemi \textit{NP}.
+Conoscendo la definizione delle proprietà fondamentali dei protocolli a Zero Knowledge, è intuibile come zkSNARK verifichi con facilità ognuna di queste: completeness, solidity e zero-knowledge. Questo protocollo non solo si distingue dagli altri per la necessità di dover coinvolgere un terzo ente nella dimostrazione, bensì introduce una nuova proprietà che ridefinisce lo standard dei Zero Knowledge Proofs: la \textit{sinteticità} o \textbf{succinctness}. Essa descrive principalmente le caratteristiche del modello a livello di spesa computazionale; per parlare quindi della sinteticità di zkSNARK si deve fare un passo indietro e capire di cosa tratta l'insiemistica di problemi che questo protocollo utilizza: si parla della classe di problemi \textit{NP}.
 
 % --- SUB / SUB / Problemi NP --- 
 \subsubsection{Non Deterministic Polynomial Problems}
-Un problema di ottimizzazione \textit{R} fa parte della classe \textit{Non Deterministic Polynomial (NP)} quando nota la sua soluzione ottima, il valore ottimo del problema può essere calcolato in un tempo polinomiale. Per descrivere il lato "non deterministico" di questa classe di problemi, viene particolarmente utile la definizione rivista utilizzando il concetto di \textit{macchine di turing}: 
+Un problema di ottimizzazione \textit{R} fa parte della classe \textit{Non Deterministic Polynomial (NP)} quando nota la sua soluzione ottima, il valore ottimo del problema può essere calcolato in un tempo polinomiale. Per descrivere il lato "non deterministico" di questa classe di problemi, viene particolarmente utile la definizione rivista utilizzando il concetto di \textit{Macchine di Turing}: 
 
 \begin{displayquote}
-Un problema di ottimizzazione appartiene alla classe di complessità NP quando le sue soluzioni ottime possono essere verificate in un tempo polinomiale con una macchina di Turing \textit{non deterministica}, ossia che in presenza di un determinato stato e un determinato carattere letto, la macchina permette più operazioni/transizioni in contemporanea.
+Un problema di ottimizzazione appartiene alla classe di complessità NP quando le sue soluzioni ottime possono essere verificate in un tempo polinomiale con una Macchina di Turing \textit{non deterministica}, ossia che in presenza di un determinato stato e un determinato carattere letto, la macchina permette più operazioni/transizioni in contemporanea.
 \end{displayquote}
 
-Questa rappresenta una categoria molto ampia di problemi di ottimizzazione: non importa con che complessità un algoritmo ci porti una soluzione ottima del problema, basta che il valore ottimo ottenuto a partire da questa sia trovato in un tempo polinomiale. Diverso è invece per i problemi della classe \textit{Polynomial (P)}, i quali richiedono che esista un algoritmo \textit{A} che risolva il problema di ottimizzazione in un tempo strettamente polinomiale. E' comunque importante evidenziare una relazione tra queste due classi di problemi:
+Questa rappresenta una categoria molto ampia di problemi di ottimizzazione: non importa con che complessità un algoritmo ci porti ad una soluzione ottima del problema, basta che il valore ottimo ricavato a partire da questa soluzione sia in un tempo polinomiale. Diverso è invece per i problemi della classe \textit{Polynomial (P)}, i quali richiedono che esista un algoritmo \textit{A} che risolve il problema di ottimizzazione in un tempo strettamente polinomiale. E' comunque importante evidenziare una relazione tra queste due classi di problemi:
 \(P \in NP\). Se un problema appartiene alla classe P, egli farà parte anche della classe NP; non vale il viceversa.
-Quando si parla, generalmente, di Zero Knowledge Proof si sta analizzando una primitiva crittografica che si basa sulla compitazione di un \textit{NP Statement}, ossia un'istanza di un certo problema NP. La maggior parte dei protocolli a Zero Knowledge sono quindi costruiti sulla classe di problemi NP, mettendo a disposizione un'ampia varietà di algoritmi tramite i quali si possa sviluppare un modello in base alle proprie esigenze. Seguendo questa introduzione, si può dire che:  
+Quando si parla, generalmente, di Zero Knowledge Proof si sta analizzando una primitiva crittografica che si basa sulla computazione di un \textit{NP-Statement}, ossia un'istanza di un certo problema NP. La maggior parte dei protocolli a Zero Knowledge sono quindi costruiti sulla classe di problemi NP, mettendo a disposizione un'ampia varietà di algoritmi tramite i quali si possa sviluppare un modello in base alle proprie esigenze. Seguendo questa introduzione, si può dire che:  
 \begin{displayquote}
-un Prover P intende dimostrare ad un Verifier V che è in possesso di una valida soluzione W di un qualche \textit{problema NP pubblico}, ma senza rivelarne la soluzione stessa. Essa viene dimostrata grazie alla computazione, da parte di P, di uno statement NP, il quale verrà poi verificato in tutta sicurezza da V.
+Un Prover P intende dimostrare ad un Verifier V che è in possesso di una valida Soluzione W di un \textit{NP-Problem pubblico} ma senza rivelare nulla della soluzione stessa. Essa viene dimostrata grazie alla computazione, da parte di P, di un NP-Statement, il quale verrà poi verificato in tutta sicurezza da V.
 \end{displayquote}
 
 % --- SUB / SUB /  Succinctness --- 
 \subsubsection{Succinctness}
-La sintenticità, \textit{succinctness}, richiede che il proof utilizzato dal modello sia \textbf{compatto} e \textbf{facilmente} verificabile. Questa proprietà risulta fondamentale ogniqualvolta un modello preveda un tipo di comunicazione \textbf{costosa} in termini di risorse, oppure quando il Verifier risulta debole a livello di risorse di computazione. Per i motivi citati nella sezione precedente, vi è particolare interesse nel utilizzare problemi della classe NP per modelli che prevedano l'implementazione della proprietà di sinteticità. Questo anche perché la classe NP risulta contenere la maggior parte di problemi reali e di ottimizzazione, tali: 
+La sintenticità, \textit{succinctness}, richiede che il proof utilizzato dal modello sia \textbf{compatto} e \textbf{facilmente} verificabile. Questa proprietà risulta fondamentale ogniqualvolta un modello prevede un tipo di comunicazione \textbf{costosa} in termini di risorse, oppure quando il Verifier risulta debole a livello di risorse di computazione. Per i motivi citati nella sezione precedente, vi è particolare interesse nel utilizzare problemi della classe NP per modelli che prevedano l'implementazione della proprietà di sinteticità. Questo anche perché la Classe NP risulta contenere la maggior parte di problemi reali e di ottimizzazione, tali: 
 \begin{itemize}
 	\item Boolean Satisfaction ( NP-complete \(\subset\) NP )
 	\item Polynomial Time on a Deterministic Turing Machine ( \textbf{sorting} ) : la classe NP contiene problemi che sono infatti risolvibili su una macchina di Turing ( non deterministica ) in tempo esponenziale o più veloce se possibile.
@@ -378,6 +389,9 @@ vuol dire che una qualsiasi istanza di un problema NP può essere verificata in Z
 \hline
 \end {tabular}
 
+
+% --- Zero Knowledge Proof nella Blockchain --- 
+\section{Zero Knowledge Proof in Blockchain}
 
 
 

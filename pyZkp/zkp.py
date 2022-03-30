@@ -14,6 +14,9 @@ def generateModulo():
 
 '''
 Generate two random secrets
+- p : Prover entity
+- v : Verifier entity
+- same : True (outputs the same secret) || False (randomized secrets)
 '''
 def generateSecrets(p: Prover, v: Verifier, same: bool):
     if same :
@@ -27,35 +30,56 @@ def generateSecrets(p: Prover, v: Verifier, same: bool):
 
 '''
 Execute a zkp verification algorithm.
-- p: Prover
-- v: Verifier
+- p: Prover entity
+- v: Verifier entity
 '''
 def zero_knowledge_proof(p: Prover, v: Verifier):
+    # Generic Variables Setup
+    n_p = 0
+    n_e = 0
+
     # Witness Phase: 
         # Prover computes V & X, sends X to the Verifier
     p.setStatememtFromSecret() # V, Prover
     x = p.computeSendStatement() # X
-    print("--- (Witness Phase) ---\n " + p.getName() + " computes: \n v = " + str(p.getPersonalStatement()) + "\n x = " + str(x))
+    print("--- (Witness Phase) ---\n " + p.getName() + " computes: \n v = " + str(p.getStatement()) + "\n x = " + str(x))
     print("\n ...sends x to " + v.getName() + "...")
+    print("\n ...At each cycle the following phases are being executed:\n(Challenge Phase) -> (Response Phase) -> (Verification Phase)...")
 
-    # Challenge Phase:
-        # Verifier randomly chooses between 0 and 1, sends it to the Prover
-    alpha = v.challenge()
-    print("\n--- (Challenge Phase) ---\n " + v.getName() + " chooses the challenge: " + str(alpha))
-    print("\n ...sends the challenge to " + p.getName() + "...")
+    while(v.getSatisfaction()):
+        # New Cycle
+        n_p += 1
 
-    # Response Phase:
-        # Prover computes a Proof from the Challenge received, sends the result to the Verifer
-    phi = p.proof(alpha)
-    print("\n--- (Response Phase) ---\n" + p.getName() + " computes the proof: " + str(phi))
-    print("\n ...sends the proof to " + v.getName() + "...")
+        # Challenge Phase:
+            # Verifier randomly chooses between 0 and 1, sends it to the Prover
+        alpha = v.challenge()
+            #print("\n--- (Challenge Phase) ---\n " + v.getName() + " chooses the challenge: " + str(alpha))
+            #print("\n ...sends the challenge to " + p.getName() + "...")
 
-    # Verification Phase:
-        # Verifier validates the Proof, takes a decision
-    v.setStatememtFromSecret() # V, Verifier
-    validation = v.verify(phi, x, alpha)
-    print("\n" + v.getName() + " validates the proof as " + str(validation) + "\n")
+        # Response Phase:
+            # Prover computes a Proof from the Challenge received, sends the result to the Verifer
+        phi = p.proof(alpha)
+            #print("\n--- (Response Phase) ---\n" + p.getName() + " computes the proof: " + str(phi))
+            #print("\n ...sends the proof to " + v.getName() + "...")
 
+        # Verification Phase:
+            # Verifier validates the Proof, takes a decision
+        v.setStatememtFromSecret() # V, Verifier
+        cycle_validation = v.verify(phi, x, alpha)
+            # Number of favorable events (Trues)
+        if cycle_validation: n_e += 1
+            # Compute new percentage of proof satisfaction
+        v.computePercentage(n_e, n_p)
+            # Checks its personal satisfaction criteria
+        v.isSatisfied(n_p)
+
+        #Current Cycle Results
+        print("\n--- CYCLE " + str(n_p) + " ---\n" + "* Challenge: " + str(alpha) + "\n* Validation: " + str(cycle_validation) + "\n* Percentage of Trust: " + str(v.getPercentage()) +"%\n")
+
+    # Setup of the RETURN statement
+    validation = True
+    if v.getPercentage() < 95.0: validation = False
+    print("\nAfter " + str(n_p) + " cycles " + v.getName() + " validates the proof as " + str(validation) + "\n")
     return validation
 
 
@@ -95,7 +119,11 @@ def main():
     result = zero_knowledge_proof(pr, vr)
 
     # --- RESULTS PRINT ---
-    print("\n*** RESULTS *** \n Does " + pr.getName() + " really know the secret? \n(" + vr.getName() + " says) " + str(result) + "\n")
+    print("\n*** RESULTS *** \nDoes " + pr.getName() + " really know the secret? \n(" + vr.getName() + " says) " + str(result) + "\n")
     print("\n*** ENTITIES *** " + pr.__str__() + vr.__str__())
+
+    # --- TESTING PRINT ---
+    #vr.computePercentage(30, 50)
+    #print("\n*** Percentages *** \n " + str(vr.getPercentage()))
 
 main()

@@ -40,22 +40,27 @@ class Entity:
 
     # --- SETTERS ---
     # Set Address
+    # - ad : new address value
     def setAddress(self, ad):
         self._address = ad
 
     # Set Name 
+    # - nn : new name value
     def setName(self, nn):
         self._name = nn
 
     # Set Modulo
+    # - mod : new modulo value
     def setModulo(self, mod):
         self._modulo = mod
 
     # Set Secret USED FOR TESTING
+    # - s : new secret value
     def setSecret(self, s):
         self._secret = s
 
     # Set Statement
+    # - st : new statement value
     def setStatement(self, st):
         self._statement = st
 
@@ -70,59 +75,98 @@ class Entity:
         self._statement = pow(self._secret, 2) % self._modulo # v = (s^2) modn
 
 '''
-Prover: an Entity that can compute a proof
+Prover: an Entity which can compute a proof
 '''
 class Prover(Entity):
     def __init__(self, a, n, p: int):
         super().__init__(a, n, p)
-        self._personalStatement = None
+        self._R = None
 
     def __str__(self):
-        return '\nProver (' + str(self._name) + '):' + '\n--address: ' + str(self._address) + '\n--modulo: ' + str(self._modulo) + '\n--secret: ' + str(self._secret) + '\n--v statement: ' + str(self._statement) + '\n--r statement: ' + str(self._personalStatement) + '\n'
+        return '\nProver (' + str(self._name) + '):' + '\n--address: ' + str(self._address) + '\n--modulo: ' + str(self._modulo) + '\n--secret: ' + str(self._secret) + '\n--v statement: ' + str(self._statement) + '\n--r statement: ' + str(self._R) + '\n'
 
     # --- GETTERS Prover ---
     # Get Personal Statement
-    def getPersonalStatement(self):
-        return self._personalStatement
+    def getR(self):
+        return self._R
 
     # --- SETTERS Prover ---
-    #Set a personal statement, the verifier won't be able to.
-    def setPersonalStatement(self):
-        self._personalStatement = randint(1, self._modulo - 1)
+    # Set a personal statement, the verifier won't be able to.
+    def setR(self):
+        self._R = randint(1, self._modulo - 1)
 
     # --- METHODS Prover ---
     # Compute a send-statement
     def computeSendStatement(self):
-        if self._personalStatement == None : self.setPersonalStatement()
-        return pow(self._personalStatement, 2) % self._modulo # x = (r^2) modn
+        if self._R == None : self.setR()
+        return pow(self._R, 2) % self._modulo # x = (r^2) modn
 
     # Compute a Proof from a challenge
+    # - a : challenge chosen by Verifier
     def proof(self, a):
         if a == 0:
-            return self._personalStatement                                     # proof = r
+            return self._R                                     # proof = r
         elif a == 1:
-            return (self._personalStatement * self._secret)%(self._modulo)   # proof = (r*s) modn
+            return (self._R * self._secret)%(self._modulo)   # proof = (r*s) modn
 
 
 '''
-Verifier: an Entity that can verify a proof
+Verifier: an Entity which can verify a proof
 '''
 class Verifier(Entity):
     def __init__(self, a, n, p: int):
         super().__init__(a, n, p)
+        self._satisfaction = True   # True : execute new cycle || False : Verifier satisfied, ends ZKP algorithm
+        self._percentage = None 
 
     def __str__(self):
-        return '\nVerifier (' + str(self._name) + '):' + '\n--address: ' + str(self._address) + '\n--modulo: ' + str(self._modulo) + '\n--secret: ' + str(self._secret) + '\n--v statement: ' + str(self._statement) + '\n'
+        return '\nVerifier (' + str(self._name) + '):' + '\n--address: ' + str(self._address) + '\n--modulo: ' + str(self._modulo) + '\n--secret: ' + str(self._secret) + '\n--v statement: ' + str(self._statement) + '\n--percentage: ' + str(self._percentage) + '%\n'
 
     # --- GETTERS Verifier ---
+    # Get Satisfaction 
+    def getSatisfaction(self):
+        return self._satisfaction
+
+    # Get Percentage 
+    def getPercentage(self):
+        return self._percentage
+
     # --- SETTERS Verifier ---
+    # Set Satisfaction 
+    # - s : new satisfaction value
+    def setSatisfaction(self, s):
+        self._satisfaction = s
+
+    # Set Percentage 
+    # - p : new percentage value
+    def setPercentage(self, p):
+        self._percentage = p
 
     # --- METHODS Verifier ---
     # Challenge assigner
     def challenge(self):
         return randint(0, 1)
 
+    # Compute Percentage
+    # - ev : number of favorable events
+    # - cy : number of cycles executed
+    def computePercentage(self, ev, cy):
+        if not cy : return
+        p = 100 * float(ev)/float(cy)
+        self.setPercentage(p)
+
+    # Compute Satisfaction
+    # - cy : number of cycles executed
+    def isSatisfied(self, cy):
+        if cy < 10: return 
+        if self._percentage < 95.0 and cy < 30: return 
+        self.setSatisfaction(False)
+        
+
     # Verifies a proof received
+    # - proof : proof received from Prover
+    # - x : pulic statement received from Prover
+    # - a : challenge used by Prover to compute proof
     def verify(self, proof, x, a):
         received = pow(proof, 2) % self._modulo # (proof^2) modn
         if a == 0:
@@ -130,8 +174,8 @@ class Verifier(Entity):
             personal = x
         elif a == 1: 
             # (x)*(v^a) modn [the Prover cannot trick the Verifier]
-            personal = (x * (pow(self._statement,a))) % self._modulo 
-        print("\n--- (Verification Phase) ---\n " + self.getName() + " computes:\n * Statement from Proof -> "+ str(received) + "\n * Personal statement based on the challenge -> " + str(personal))
+            personal = (x * (pow(self._statement, a))) % self._modulo 
+        #print("\n--- (Verification Phase) ---\n " + self.getName() + " computes:\n * Statement from Proof -> "+ str(received) + "\n * Personal statement based on the challenge -> " + str(personal))
 
         # validation
         if received == personal: return True # proof^2 == x*(v^a) modn
