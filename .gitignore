@@ -10,6 +10,11 @@ Latex/Book_ZKP.aux
 Latex/Book_ZKP.log
 Latex/Book_ZKP.synctex.gz
 Latex/Book_ZKP.toc
+Latex/proposte_applicative_zkp.aux
+Latex/proposte_applicative_zkp.log
+Latex/proposte_applicative_zkp.out
+Latex/proposte_applicative_zkp.synctex.gz
+Latex/proposte_applicative_zkp.toc
 
 #pyZkp
 pyZkp/__pycache__/entities.cpython-39.pyc

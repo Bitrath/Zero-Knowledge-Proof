@@ -392,6 +392,18 @@ vuol dire che una qualsiasi istanza di un problema NP può essere verificata in Z
 
 % --- Zero Knowledge Proof nella Blockchain --- 
 \section{Zero Knowledge Proof in Blockchain}
+La correlazione tra Blockchain e Zero Knowledge Proof vive principalmente con l'obiettivo di garantire maggiore sicurezza, confidenzialità ed integrità sui dati sensibili e personali degli utenti che intendono effettuare transazioni su di un ledger pubblico. Essendo a tutti gli effetti una tecnica crittografica, Zero Knowledge Proof può essere, ad esempio, usato per verificare se il Prover possiede o meno una quantità sufficiente di valuta nell'ambiente della blockchain, senza però rivelare nessun dato sensibile appartenente alla transazione. Per analizzare ed affinare questo argomento, è importante fare un breve sunto del concetto di \textit{Blockchain}.
+
+% --- SUB / Blockchain Summary ---
+\subsection{Blockchain: un sommario}
+Una Blockchain è un ledger decentralizzato che consiste di una catena di blocchi in graduale crescita. La struttura è stata pensata avendo in mente un sistema condiviso ed indipendente per immagazzinare transaction-data all'interno di un database always-on e replicabile (\textit{ledger}). In modo molto generico stiamo quindi parlando di un sistema \textit{peer-to-peer} costituito da nodi indipendenti, detti \textit{full nodes}, che contengono un intera copia della blockchain e possono creare nuovi blocchi. In modo molto astratto, si può immaginare un unica catena consequenziale di blocchi già validati ed inseriti correttamente dai full-nodes fino al momento nel quale si è dato uno sguardo allo stato globale della stessa.
+\paragraph{Blockchain Block} Come è già stato evidenziato, la blockchain non è altro che una catena di blocchi collegati tra loro attraverso un \textit{valore di hashing}. Un blocco è costituito da un gruppo di transazioni validate (con i dati relativi ad essa) in ordine cronologico tra di loro. In verità, ogni blocco è costituito da due sezioni, tali:
+\begin{itemize}
+	\item[]\textbf{Block Header}: E' costituito da un Merkle Root hash value, un timestamp
+	\item[]\textbf{Block Body}
+\end{itemize}
+
+
 
 
 
