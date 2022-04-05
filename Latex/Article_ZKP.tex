@@ -117,12 +117,19 @@ L'esecuzione del protocollo vedrà le fasi introdotte in precedenza, con l'aggiun
 	\end{itemize}
 	Successivamente invia il Proof  \(\varphi\) al Verifier.
 	
-	\item \textbf{Verification Phase}: Il Verifier valida il Proof \(\varphi\) ricevuto dal Prover. Se vale  
-	\[
-		\varphi^2 = x(v^\alpha) (mod n)
-	\]
-	allora accetta il \(\varphi\) ricevuto. \\
-	Decide poi se inoltrare una nuova \textit{challenge} al Prover o confermare che quest'ultimo conosce effettivamente il segreto. \\
+	\item \textbf{Verification Phase}: Il Verifier valida il Proof \(\varphi\) ricevuto dal Prover.
+	\begin{itemize}
+		\item[Se \( \alpha = 0\)]: il Verifier verifica il Proof tramite
+		\[
+		\varphi^2 (mod n) = x 
+		\]
+		\item[Se \( \alpha = 1\)]: il Verifier verifica il Proof tramite
+		\[
+		\varphi^2 (mod n) = x(v^\alpha) (mod n)
+		\]
+	\end{itemize}
+	Se si ritiene soddisfatto della dimostrazione, allora può accettare o rifiutare il \(\varphi\) ricevuto. \\
+	Decide quindi se inoltrare una nuova \textit{challenge} al Prover o confermare che quest'ultimo conosce effettivamente il segreto. \\
 \end{enumerate} 
 \newpage
 \textbf{Risultati}

@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, random
 from math import sqrt
 
 '''
@@ -145,7 +145,9 @@ class Verifier(Entity):
     # --- METHODS Verifier ---
     # Challenge assigner
     def challenge(self):
-        return randint(0, 1)
+        randChoice = random()
+        if randChoice < 0.7 : return 0
+        return 1
 
     # Compute Percentage
     # - ev : number of favorable events
