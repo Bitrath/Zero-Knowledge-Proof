@@ -1,0 +1,71 @@
+\documentclass[a4paper,10pt]{article} 
+\usepackage[latin1]{inputenc} 
+\usepackage[T1]{fontenc} 
+\usepackage[italian]{babel}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor= darkgray,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+\urlstyle{same}
+
+\title{Proposte applicative per ZKP} 
+\author{Nicolò Zarulli}
+\date{Aprile 2022}
+
+\begin{document}
+\maketitle
+
+\paragraph{Le Proposte}
+
+\begin{enumerate}
+	% --- 1 ---
+	\item \textbf{Studio, utilizzo e/o replicazione di librerie di implementazione per modelli Zero Knowledge Proof}
+	\begin{itemize}
+		% --- sub 1 ---
+		\item \textbf{zkSNARKs}
+			\subitem[1] \textcolor{MidnightBlue}{Zokrates}: toolbox per la creazione di zkSNARKS su Ethereum. E' disponibile un tutorial, fornito dai creatori, che permette di studiare la libreria per arrivare alla creazione di circuiti zero-knowledge-proofs testabili su Ethereum tramite l'IDE Remix. \\ -> \url{https://github.com/Zokrates/ZoKrates} \\ -> \url{https://zokrates.github.io/gettingstarted.html} \\ -> \url{https://zokrates.github.io/examples/rng_tutorial.html} \\ -> ZKP Application Demo (usa Zokrates, Truffle e Docker) \url{https://medium.com/hackernoon/zero-knowledge-proof-application-demo-2a457cfc73c1}
+			\subitem[2] \textcolor{MidnightBlue}{Gnark}: libreria per la creazione di zkSNARKs (principalmente circuiti aritmetici) scritta in Go. Sono disponibili vari esempi introdotti dal creatore. \\ -> \url{https://github.com/ConsenSys/gnark} 
+			\subitem[3] \textcolor{MidnightBlue}{jSNARK}: libreria scritta in Java, si basa su libsnark e puo' integrare circuiti prodotti dal compiler Pinocchio. \\ -> \url{https://github.com/akosba/jsnark} 
+			\subitem[4] \textcolor{MidnightBlue}{RollupNC}: utilizzo delle librerie Circum e SnarkJS per la creazione di RollupNC (il RollUp è alla base di quesi tutte le implementazioni di protocolli zkp sulle blockchain: aggrega più transazioni in una singola transazione onchain). \\ -> Tutorial: \url{https://github.com/therealyingtong/roll_up_circom_tutorial} \\ -> RollupNC: \url{https://github.com/rollupnc/RollupNC} \\
+		% --- sub 2 ---
+		\item \textbf{PayPub \\}
+		PayPub è un interessante libreria-zk costruita su C++. Vuole implementare la possibilità di effettuare pagamenti affidabili ( quindi a \textit{zero knowledge}) per la pubblicazione di informazioni sulla blockchain Bitcoin.  \\
+	-> \url{https://github.com/unsystem/paypub} \\ \\
+		% --- sub 3 ---
+		\item \textbf{Zero Knowledge Range Proofs}
+			\subitem[1] \textcolor{MidnightBlue}{ING Group ZKRP framework}:
+			Il Gruppo Bancario ING ha portato avanti lo sviluppo di un framework completamente incentrato sui Zero Knowledge Range Proofs. La loro repository Open Source mette a disposizione un interessante implementazione del modello zkp \textit{Bulletproofs}, interamente scritta in Go.	 \\
+	- > \url{https://github.com/ing-bank/zkrp} \\
+	Una versione archiviata del progetto mette a disposizione un branch interamente dedicato all'implementazione di Bulletproofs in Java. \\
+	- > \url{https://github.com/ing-bank/zkproofs/tree/bulletproofs} \\
+	\end{itemize}
+	% --- 2 --- 
+	\item \textbf{Studio, utilizzo di applicativi che implementano ZKP}
+	\begin{itemize}
+		\item \textbf{zkSync \\}
+		zkSync e' una piattaforma che ha l'obiettivo di implementare la validazione delle transazioni sullo strato L1 di Etheruem interamente a Zero Knowledge. Essendo un progetto Open Source, la completezza del codice e' disponibile su GitHub. La piattaforma offre dei test token per effettuare degli esperimenti. Possibili sviluppi applicativi:
+			\subitem[1]\textcolor{MidnightBlue}{Smart Contracts in Zinc o Solidity} \\ -> \url{https://zksync.io/} 
+			\subitem[2]\textcolor{MidnightBlue}{Test delle prestazioni della piattaforma} \\ -> \url{https://wallet.zksync.io/}
+			\subitem[3]\textcolor{MidnightBlue}{Testnet con documentazione} \\ -> \url{https://v2-docs.zksync.io/dev/guide/front-end-integration.html} \\
+		\item \textbf{zkPoD \\}	
+		zkPoD è una libreria open source che mette a disposizione un sistema decentralizzato per effettuare uno scambio di dati mirato al concetto di "Payment on Delivery". Il framework utilizza come \textit{third party} la blockchain per assicurare che i nodi in comunicazione siano onesti tra loro. Questa libreria mette a disposizione un ottima documentazione per la sua sperimentazione. \\
+	- > \url{https://github.com/sec-bit/zkPoD-node}
+	\end{itemize}
+	% --- 3 --- 
+	\item \textbf{Sviluppo di un applicativo nell'ambito ZKP}
+	\begin{itemize}
+		\item \textbf{Sviluppo di una DApp (L2 Ethereum) che implementi un framework zkp} \\
+	Sviluppare un'applicazione decentralizzata che comunichi direttamente con il L1 di Ethereum e che veda l'implementazione di un protocollo ZKP. Una prima fase potrebbe vedere lo sviluppo di un framework per la creazione di Zero Knowledge Proofs (visto che si parla di Ethereum, sarebbe importante dare uno sguardo ai Range Proofs come Bulletproofs, oppure zkSNARKs), mentre una seconda fase potrebbe vedere l'implementazione di questo framework atteaverso una DApp su Ethereum. \\
+	- > \url{https://www.moesif.com/blog/blockchain/ethereum/Tutorial-for-building-Ethereum-Dapp-with-Integrated-Error-Monitoring/}
+		\item \textbf{Sviluppo di una libreria Python che implementi un protocollo ZKP per lo scambio di informazioni tra due Peer} \\
+	Questa proposta si scosta dal mondo delle Blockchain e vede uno sviluppo più approfondito ed avanzato della mia piccola Libreria \textit{pyZKP} che vede l'implementazione di un \textit{Interactive ZKP} basato sull'aritmetica modulare. 
+	\end{itemize}
+\end{enumerate}
+
+\end{document}

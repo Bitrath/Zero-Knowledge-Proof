@@ -105,7 +105,7 @@ def main():
     vr = Verifier(address_v, name_v, m)
 
         # Set random secrets to Verify
-    generateSecrets(pr, vr, False)
+    generateSecrets(pr, vr, True)
 
         # Prompt setupm styling
     print("*** SETUP ***\n")

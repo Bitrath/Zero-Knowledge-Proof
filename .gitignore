@@ -1,20 +1,20 @@
 #tex images
-Latex/ZKP_Images/*
+Resources/ZKP_Images/*
 
 #tex bin files
-Latex/Article_ZKP.aux
-Latex/Article_ZKP.log
-Latex/Article_ZKP.synctex.gz
-Latex/Article_ZKP.toc
-Latex/Book_ZKP.aux
-Latex/Book_ZKP.log
-Latex/Book_ZKP.synctex.gz
-Latex/Book_ZKP.toc
-Latex/proposte_applicative_zkp.aux
-Latex/proposte_applicative_zkp.log
-Latex/proposte_applicative_zkp.out
-Latex/proposte_applicative_zkp.synctex.gz
-Latex/proposte_applicative_zkp.toc
+Resources/Article_ZKP.aux
+Resources/Article_ZKP.log
+Resources/Article_ZKP.synctex.gz
+Resources/Article_ZKP.toc
+Resources/Book_ZKP.aux
+Resources/Book_ZKP.log
+Resources/Book_ZKP.synctex.gz
+Resources/Book_ZKP.toc
+Resources/proposte_applicative_zkp.aux
+Resources/proposte_applicative_zkp.log
+Resources/proposte_applicative_zkp.out
+Resources/proposte_applicative_zkp.synctex.gz
+Resources/proposte_applicative_zkp.toc
 
 #pyZkp
 pyZkp/__pycache__/entities.cpython-39.pyc
