@@ -23,3 +23,10 @@ pyZkp/__pycache__/entities.cpython-39.pyc
 .DS_Store
 Latex/.DS_Store
 pyZkp/.DS_Store
+
+#zkDApp
+
+#Others
+.vscode
+Testing
+INGBulletproofs
