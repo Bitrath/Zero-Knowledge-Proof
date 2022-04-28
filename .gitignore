@@ -26,9 +26,11 @@ pyZkp/.DS_Store
 
 #zkDApp
 
+#Testing
+Testing/Circom0-5-10/node_modules
+
 #Others
 .vscode
-Testing
 INGBulletproofs
 
 #PackageLocks

@@ -1,4 +1,4 @@
 # Heavy Folders
 node_modules
 circomlib
-.package-lock.json
+package-lock.json
