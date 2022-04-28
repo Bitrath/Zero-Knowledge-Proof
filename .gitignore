@@ -30,3 +30,6 @@ pyZkp/.DS_Store
 .vscode
 Testing
 INGBulletproofs
+
+#PackageLocks
+zkDApp/package-lock.json
