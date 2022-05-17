@@ -25,9 +25,11 @@ Latex/.DS_Store
 pyZkp/.DS_Store
 
 #zkDApp
+zkDApp/node_modules
 
 #Testing
-Testing/Circom0-5-10/node_modules
+Testing/Circom2/node_modules
+Testing/Circom2/Examples/CircomLib
 
 #Others
 .vscode
